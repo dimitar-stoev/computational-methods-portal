@@ -1,0 +1,170 @@
+<span>Generic solver</span>
+<h2>Bisection method</h2>
+
+<div class="content">
+  <ul class="content-nav">
+    <li
+      [ngClass]="{ selected: labelSelected.value }"
+      (click)="handleLabels(true)"
+    >
+      Information
+    </li>
+    <li
+      [ngClass]="{ selected: !labelSelected.value }"
+      (click)="handleLabels(false)"
+    >
+      Input
+    </li>
+  </ul>
+  <div>
+    @if (labelSelected.value) {
+      <div class="content-section">
+        <h2>What is the Bisection Method?</h2>
+        <p>
+          Imagine you're looking for treasure buried somewhere between two trees
+          – Tree A and Tree B. You know it's somewhere between them, but you're
+          not sure where.
+        </p>
+        <p>
+          So you go to the <strong>middle point</strong> between the two trees
+          and check if the treasure is there. If it's not, you ask:
+        </p>
+        <ul>
+          <li>Is the treasure between Tree A and the middle?</li>
+          <li>Or is it between the middle and Tree B?</li>
+        </ul>
+        <p>
+          Then you pick the right half and repeat – always going to the
+          <strong>middle</strong> of your new path. Step by step, you get
+          <strong>closer and closer</strong> to the treasure!
+        </p>
+        <hr />
+        <h3>How it works with math</h3>
+        <p>
+          The bisection method helps us find where a function
+          <strong>f(x) = 0</strong>. We start with two values:
+          <strong>a</strong> and <strong>b</strong>, where:
+        </p>
+        <p>f(a) < 0 and f(b) > 0 (or the other way around)</p>
+        <p>
+          If the function changes signs between them, there's a root in between.
+          We do:
+        </p>
+        <ul>
+          <li>Find the midpoint: <strong>m = (a + b) / 2</strong></li>
+          <li>Check the sign of <strong>f(m)</strong></li>
+          <li>If it's close enough to 0 (like 0.0001), we're done!</li>
+          <li>
+            Otherwise, replace <strong>a</strong> or <strong>b</strong> with
+            <strong>m</strong> based on the sign.
+          </li>
+          <li>Repeat until you're close enough.</li>
+        </ul>
+        <p>
+          This method is <strong>simple, safe, and always works</strong> if the
+          function is continuous and there's a sign change.
+        </p>
+      </div>
+    } @else {
+      <div class="example-section">
+        <h2>Try These Example Equations</h2>
+        <p>Use <strong>x</strong> as your variable.</p>
+
+        <h3>Polynomial Examples</h3>
+        <ul>
+          <li><code>x^3 - 3*x^2 + 6*x - 1</code></li>
+          <li><code>x^2 - 2</code> &nbsp; <em>(root: √2)</em></li>
+          <li><code>x^3 - x - 2</code></li>
+          <li><code>5*x^3 + 2*x - 7</code></li>
+        </ul>
+
+        <h3>Functions with <code>e^x</code></h3>
+        <ul>
+          <li><code>exp(x) + 2x - 2</code></li>
+          <li><code>x * exp(x) - 1</code></li>
+          <li><code>2 - exp(x)</code></li>
+          <li><code>exp(x - 1) - x</code></li>
+        </ul>
+
+        <p>
+          You can copy any of these equations and paste them directly into the
+          input field.
+          <br />
+          <strong>Tip:</strong> Don't forget to set a valid interval
+          <em>[a, b]</em> where the function changes sign.
+        </p>
+      </div>
+    }
+  </div>
+</div>
+
+<form [formGroup]="bisectionForm" (ngSubmit)="handleSave()">
+  <div>
+    <div>
+      <label for="function">Function:</label>
+      <input
+        type="text"
+        id="function"
+        name="function"
+        formControlName="equation"
+        placeholder="x^3 - 3*x^2 + 6*x - 1"
+        required
+      />
+    </div>
+    <div>
+      <label for="lowerBound">Lower Bound:</label>
+      <input
+        type="number"
+        id="lowerBound"
+        name="lowerBound"
+        formControlName="lowerBound"
+        placeholder="0"
+        required
+      />
+      <label for="upperBound">Upper Bound:</label>
+      <input
+        type="number"
+        id="upperBound"
+        name="upperBound"
+        formControlName="upperBound"
+        placeholder="1"
+        required
+      />
+      <label for="tolerance">Tolerance</label>
+      <input
+        type="number"
+        id="tolerance"
+        name="tolerance"
+        formControlName="epsilon"
+        placeholder="0.0001"
+        required
+      />
+    </div>
+  </div>
+  <div class="buttons">
+    <button type="submit">Display calculation</button>
+  </div>
+</form>
+
+@if (response | async; as data) {
+  <div class="result">
+    <h3>Result</h3>
+    <p>Root: {{ data.result }}</p>
+    <table>
+      <tr>
+        <th>Left</th>
+        <th>Right</th>
+        <th>p</th>
+        <th>f(p)</th>
+      </tr>
+      @for (item of data.table; track item.p) {
+        <tr>
+          <td>{{ item.left }}</td>
+          <td>{{ item.right }}</td>
+          <td>{{ item.p }}</td>
+          <td>{{ item.fp }}</td>
+        </tr>
+      }
+    </table>
+  </div>
+}

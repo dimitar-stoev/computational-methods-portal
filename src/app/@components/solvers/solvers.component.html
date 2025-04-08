@@ -1,0 +1,14 @@
+<div>
+  <h2>
+    Let's get <br />
+    solving
+  </h2>
+  <div class="solvers">
+    @for (method of solversEquations; track method) {
+      <a routerLink="/calculate/{{ method.href }}">{{ method.title }}</a>
+    }
+  </div>
+</div>
+<div>
+  <img src="assets/math_home.jpg" alt="Math equations" />
+</div>

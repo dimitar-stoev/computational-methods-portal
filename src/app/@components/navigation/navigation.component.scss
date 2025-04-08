@@ -1,0 +1,30 @@
+nav {
+  background-color: #f8f9fa;
+  border-radius: 3px;
+  padding: 10px;
+  margin: 20px 0;
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #007bff;
+    margin-right: 30px;
+    font-weight: 900;
+  }
+
+  ul {
+    display: flex;
+    gap: 10px;
+    list-style: none;
+
+    li {
+      font-size: 14px;
+
+      a {
+        text-decoration: none;
+        color: #222121;
+      }
+    }
+  }
+}
