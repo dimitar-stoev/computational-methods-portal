@@ -7,6 +7,7 @@ import {
   BisectionEquationResponse,
 } from "../../../@models/equations";
 import { CalculationService } from "../../../@services/calculation.service";
+import { GraphService } from "../../../@services/graph.service";
 
 @Component({
   selector: "app-bisection",
@@ -29,6 +30,7 @@ export class BisectionComponent {
   constructor(
     private formBuilder: FormBuilder,
     private calculationService: CalculationService,
+    private graphService: GraphService,
   ) {}
 
   handleLabels(isLabel: boolean) {
@@ -53,6 +55,30 @@ export class BisectionComponent {
         }),
       )
       .subscribe((response) => {
+        const layout = {
+          title: "Bisection Method",
+          xaxis: {
+            title: "X",
+            range: [
+              this.bisectionForm.value.lowerBound || 0,
+              this.bisectionForm.value.upperBound || 1,
+            ],
+          },
+          yaxis: {
+            title: "f(x)",
+            zeroline: true,
+          },
+          showlegend: true,
+        };
+
+        const data = this.graphService.prepareGraphData(
+          response.table,
+          this.bisectionForm.value.lowerBound || 0,
+          this.bisectionForm.value.upperBound || 1,
+          this.bisectionForm.value.equation || "",
+        );
+
+        this.graphService.plotGraph(data, layout, "bisectionGraph");
         this.response.next(response);
       });
   }
