@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: "https://solvy.stoev.dev",
+  apiUrl: "https://api.solvy.stoev.dev",
 };
