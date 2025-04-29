@@ -1,6 +1,6 @@
 <section>
     <span>Generic solver</span>
-    <h2>Bisection method</h2>
+    <h2>Chord method</h2>
 
     <div class="content">
         <ul class="content-nav">
@@ -20,50 +20,27 @@
         <div>
             @if (labelSelected.value) {
                 <div class="content-section">
-                    <h2>What is the Bisection Method?</h2>
+                    <h2>What is the Chord Method?</h2>
                     <p>
-                        Imagine you're looking for treasure buried somewhere between two trees
-                        – Tree A and Tree B. You know it's somewhere between them, but you're
-                        not sure where.
+                        Picture a rope stretched between two points on a curvy hill, and you're trying to find where the hill dips to exactly sea level (zero). The rope gives you a straight line, and where it crosses sea level is a guess for the dip.
                     </p>
                     <p>
-                        So you go to the <strong>middle point</strong> between the two trees
-                        and check if the treasure is there. If it's not, you ask:
-                    </p>
-                    <ul>
-                        <li>Is the treasure between Tree A and the middle?</li>
-                        <li>Or is it between the middle and Tree B?</li>
-                    </ul>
-                    <p>
-                        Then you pick the right half and repeat – always going to the
-                        <strong>middle</strong> of your new path. Step by step, you get
-                        <strong>closer and closer</strong> to the treasure!
+                        You check that crossing point. If it's not quite at sea level, you move one end of the rope to that point and stretch it again. Each time, the rope gets you <strong>closer</strong> to the exact dip!
                     </p>
                     <hr/>
                     <h3>How it works with math</h3>
                     <p>
-                        The bisection method helps us find where a function
-                        <strong>f(x) = 0</strong>. We start with two values:
-                        <strong>a</strong> and <strong>b</strong>, where:
-                    </p>
-                    <p>f(a) < 0 and f(b) > 0 (or the other way around)</p>
-                    <p>
-                        If the function changes signs between them, there's a root in between.
-                        We do:
+                        The chord method (also called the secant method) finds where a function <strong>f(x) = 0</strong>. We start with two guesses: <strong>a</strong> and <strong>b</strong>, and:
                     </p>
                     <ul>
-                        <li>Find the midpoint: <strong>m = (a + b) / 2</strong></li>
-                        <li>Check the sign of <strong>f(m)</strong></li>
-                        <li>If it's close enough to 0 (like 0.0001), we're done!</li>
-                        <li>
-                            Otherwise, replace <strong>a</strong> or <strong>b</strong> with
-                            <strong>m</strong> based on the sign.
-                        </li>
-                        <li>Repeat until you're close enough.</li>
+                        <li>Draw a "rope" (straight line) between <strong>f(a)</strong> and <strong>f(b)</strong>.</li>
+                        <li>Find where this line crosses <strong>f(x) = 0</strong>. That’s our new guess, <strong>c</strong>, calculated as:</li>
+                        <li><strong>c = b - f(b) * (b - a) / (f(b) - f(a))</strong></li>
+                        <li>Check if <strong>f(c)</strong> is close enough to 0 (like 0.0001). If yes, we’re done!</li>
+                        <li>If not, replace <strong>a</strong> with <strong>b</strong>, and <strong>b</strong> with <strong>c</strong>, then repeat.</li>
                     </ul>
                     <p>
-                        This method is <strong>simple, safe, and always works</strong> if the
-                        function is continuous and there's a sign change.
+                        This method is <strong>faster</strong> than bisection but needs good starting points and may not always converge if the function is too wild.
                     </p>
                 </div>
             } @else {
@@ -73,33 +50,31 @@
 
                     <h3>Polynomial Examples</h3>
                     <ul>
-                        <li><code>x^3 - 3*x^2 + 6*x - 1</code></li>
-                        <li><code>x^2 - 2</code> &nbsp; <em>(root: √2)</em></li>
-                        <li><code>x^3 - x - 2</code></li>
-                        <li><code>5*x^3 + 2*x - 7</code></li>
+                        <li><code>x^3 - 4*x + 1</code></li>
+                        <li><code>x^2 - 3</code>   <em>(root: √3)</em></li>
+                        <li><code>x^3 + 2*x - 5</code></li>
+                        <li><code>3*x^3 - x^2 + 2</code></li>
                     </ul>
 
                     <h3>Functions with <code>e^x</code></h3>
                     <ul>
-                        <li><code>exp(x) + 2x - 2</code></li>
-                        <li><code>x * exp(x) - 1</code></li>
-                        <li><code>2 - exp(x)</code></li>
-                        <li><code>exp(x - 1) - x</code></li>
+                        <li><code>exp(x) - 3*x</code></li>
+                        <li><code>x * exp(x) - 2</code></li>
+                        <li><code>exp(x) - 5</code></li>
+                        <li><code>exp(2*x) - x - 1</code></li>
                     </ul>
 
                     <p>
-                        You can copy any of these equations and paste them directly into the
-                        input field.
+                        You can copy any of these equations and paste them directly into the input field.
                         <br/>
-                        <strong>Tip:</strong> Don't forget to set a valid interval
-                        <em>[a, b]</em> where the function changes sign.
+                        <strong>Tip:</strong> Choose starting points <em>a</em> and <em>b</em> close to the root for faster convergence.
                     </p>
                 </div>
             }
         </div>
     </div>
 
-    <form [formGroup]="bisectionForm" (ngSubmit)="handleSave()">
+    <form [formGroup]="chordForm" (ngSubmit)="handleSave()">
         <div>
             <div>
                 <label for="function">Function:</label>
@@ -108,7 +83,7 @@
                         id="function"
                         name="function"
                         formControlName="equation"
-                        placeholder="x^3 - 3*x^2 + 6*x - 1"
+                        placeholder="x^3 - 4*x + 1"
                         required
                 />
             </div>
@@ -155,17 +130,19 @@
             <p>Root: {{ data.result }}</p>
             <table>
                 <tr>
-                    <th>Left</th>
-                    <th>Right</th>
+                    <th>fX0</th>
+                    <th>fX1</th>
                     <th>p</th>
-                    <th>f(p)</th>
+                    <th>x0</th>
+                    <th>xNext</th>
                 </tr>
                 @for (item of data.table; track item['p']) {
                     <tr>
-                        <td>{{ item['left'] }}</td>
-                        <td>{{ item['right'] }}</td>
+                        <td>{{ item['fX0'] }}</td>
+                        <td>{{ item['fX1'] }}</td>
                         <td>{{ item['p'] }}</td>
-                        <td>{{ item['fp'] }}</td>
+                        <td>{{ item['x0'] }}</td>
+                        <td>{{ item['xNext'] }}</td>
                     </tr>
                 }
             </table>

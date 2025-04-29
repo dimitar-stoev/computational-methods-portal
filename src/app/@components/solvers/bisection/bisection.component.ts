@@ -1,13 +1,11 @@
-import { Component } from "@angular/core";
-import { BehaviorSubject, catchError, Subject } from "rxjs";
-import { AsyncPipe, NgClass } from "@angular/common";
-import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import {
-  BisectionEquationRequest,
-  BisectionEquationResponse,
-} from "../../../@models/equations";
-import { CalculationService } from "../../../@services/calculation.service";
-import { GraphService } from "../../../@services/graph.service";
+import {Component} from "@angular/core";
+import {BehaviorSubject, catchError, Subject} from "rxjs";
+import {AsyncPipe, NgClass} from "@angular/common";
+import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
+import {BisectionEquationRequest, BisectionEquationResponse,} from "../../../@models/equations";
+import {GraphService} from "../../../@services/graph.service";
+import {SolverService} from "../../../@services/strategies.service";
+import {BisectionStrategyService} from "../../../@services/bisection-strategy.service";
 
 @Component({
   selector: "app-bisection",
@@ -29,9 +27,12 @@ export class BisectionComponent {
 
   constructor(
     private formBuilder: FormBuilder,
-    private calculationService: CalculationService,
+    private bisectionStrategy: BisectionStrategyService,
     private graphService: GraphService,
-  ) {}
+    private solverService: SolverService,
+  ) {
+    this.solverService.setStrategy(this.bisectionStrategy);
+  }
 
   handleLabels(isLabel: boolean) {
     this.labelSelected.next(isLabel);
@@ -43,7 +44,7 @@ export class BisectionComponent {
       return;
     }
 
-    this.calculationService
+    this.solverService
       .calculate(this.bisectionForm.value as BisectionEquationRequest)
       .pipe(
         catchError((err) => {

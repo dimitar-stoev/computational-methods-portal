@@ -18,4 +18,11 @@ export const routes: Routes = [
         (m) => m.BisectionComponent,
       ),
   },
+  {
+    path: "calculate/chord",
+    loadComponent: () =>
+      import("./@components/solvers/chord/chord.component").then(
+        (m) => m.ChordComponent,
+      ),
+  }
 ];
